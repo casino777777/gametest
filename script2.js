@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let computerPaddleX = gameContainer.clientWidth / 2 - computerPaddle.offsetWidth / 2;
     let animationFrameId;
     const speedIncrement = 0.6;
-    const computerPaddleSpeed = 6;
+    const computerPaddleSpeed = 8;
 
     function startGame() {
         if (playerCurrency < entryFee) {
