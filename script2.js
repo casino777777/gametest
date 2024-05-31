@@ -132,7 +132,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function movePlayerPaddle(event) {
-        playerPaddleX = event.clientX - gameContainer.offsetLeft - playerPaddle.offsetWidth / 2;
+        let clientX;
+        if (event.type === 'mousemove') {
+            clientX = event.clientX;
+        } else if (event.type === 'touchmove') {
+            clientX = event.touches[0].clientX;
+        }
+
+        playerPaddleX = clientX - gameContainer.offsetLeft - playerPaddle.offsetWidth / 2;
         playerPaddleX = Math.max(0, Math.min(gameContainer.clientWidth - playerPaddle.offsetWidth, playerPaddleX));
         playerPaddle.style.left = playerPaddleX + 'px';
     }
@@ -179,5 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     gameContainer.addEventListener('mousemove', movePlayerPaddle);
+    gameContainer.addEventListener('touchmove', movePlayerPaddle);
     startGame();
 });
