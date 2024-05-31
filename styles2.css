@@ -26,6 +26,7 @@ body, html {
     background-color: #958f8f;
     overflow: hidden;
     margin: 4px;
+    touch-action: none;
 }
 
 #ball {
