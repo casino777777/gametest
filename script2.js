@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const playerPaddle = document.getElementById('player-paddle');
     const computerPaddle = document.getElementById('computer-paddle');
     const gameContainer = document.querySelector('.game-container');
+    const container = document.querySelector('.container');
     const scoreDisplay = document.getElementById('score');
     const messageDisplay = document.getElementById('message');
     const currencyDisplay = document.getElementById('currency');
@@ -185,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     }
 
-    gameContainer.addEventListener('mousemove', movePlayerPaddle);
-    gameContainer.addEventListener('touchmove', movePlayerPaddle);
+    container.addEventListener('mousemove', movePlayerPaddle);
+    container.addEventListener('touchmove', movePlayerPaddle);
     startGame();
 });
