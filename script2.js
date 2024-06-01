@@ -13,14 +13,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let playerCurrency = 5;
     const entryFee = 1;
     const winReward = 1;
-    let ballSpeedX = 4;
-    let ballSpeedY = 4;
+    let ballSpeedX = 2;
+    let ballSpeedY = 2;
     let ballX = gameContainer.clientWidth / 2 - ball.offsetWidth / 2;
     let ballY = gameContainer.clientHeight / 2 - ball.offsetHeight / 2;
     let playerPaddleX = gameContainer.clientWidth / 2 - playerPaddle.offsetWidth / 2;
     let computerPaddleX = gameContainer.clientWidth / 2 - computerPaddle.offsetWidth / 2;
     let animationFrameId;
-    const speedIncrement = 0.6;
+    const speedIncrement = 0.5;
     const computerPaddleSpeed = 8;
 
     function startGame() {
