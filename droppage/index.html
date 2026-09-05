@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0a0a0f" />
+  <title>DropPage - одноразові крипто-донати</title>
+  <meta name="description" content="Створи одноразову сторінку для збору крипто-донатів без реєстрації та без посередника." />
+  <meta property="og:title" content="DropPage - crypto donation pages" />
+  <meta property="og:description" content="One idea. One page. One wallet." />
+  <meta property="og:type" content="website" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./">DROP<span>PAGE</span></a>
+    <div class="pill">non-custodial · no signup</div>
+  </header>
+
+  <main>
+    <section id="builder" class="shell hero">
+      <div class="hero-copy">
+        <div class="eyebrow">ONE IDEA · ONE PAGE · ONE WALLET</div>
+        <h1>Збирай крипто-донати під конкретну ідею.</h1>
+        <p class="lede">Фото, короткий опис, ціль і твоя публічна адреса. Ми не тримаємо кошти і не просимо приватних ключів.</p>
+      </div>
+
+      <form id="campaignForm" class="card form-grid">
+        <label class="full">Фото / обкладинка URL
+          <input id="imageUrl" type="url" placeholder="https://.../moto.jpg" maxlength="600" required />
+        </label>
+        <label class="full">Назва проєкту
+          <input id="title" type="text" maxlength="80" placeholder="Milady Moto Project" required />
+        </label>
+        <label class="full">Що ти будуєш
+          <textarea id="description" maxlength="600" rows="4" placeholder="Хочу зробити кастомний мотоцикл у цьому стилі..." required></textarea>
+        </label>
+        <label>Мережа
+          <select id="network" required>
+            <option value="base">Base</option>
+            <option value="ethereum">Ethereum</option>
+            <option value="solana">Solana</option>
+            <option value="arbitrum">Arbitrum</option>
+            <option value="optimism">Optimism</option>
+            <option value="polygon">Polygon</option>
+          </select>
+        </label>
+        <label>Актив
+          <select id="asset" required>
+            <option value="ETH">ETH</option>
+            <option value="USDC">USDC</option>
+            <option value="SOL">SOL</option>
+          </select>
+        </label>
+        <label class="full">Публічна адреса гаманця
+          <input id="wallet" type="text" spellcheck="false" autocomplete="off" placeholder="0x... або Solana address" required />
+        </label>
+        <label>Ціль
+          <input id="goal" type="number" min="0" step="any" placeholder="5" required />
+        </label>
+        <label>Рекомендований донат
+          <input id="suggested" type="number" min="0" step="any" placeholder="0.01" />
+        </label>
+        <label>Дедлайн
+          <input id="deadline" type="date" />
+        </label>
+        <label>Автор / handle
+          <input id="creator" type="text" maxlength="50" placeholder="@yourhandle" />
+        </label>
+        <div class="full security-note">Ніколи не вводь seed phrase або private key. DropPage потребує лише публічну адресу.</div>
+        <button class="primary full" type="submit">Створити сторінку збору</button>
+      </form>
+
+      <div class="demo-row">
+        <button id="loadDemo" class="ghost" type="button">Заповнити демо</button>
+        <span>Дані кампанії кодуються у share-link. Сервер не потрібен.</span>
+      </div>
+    </section>
+
+    <section id="campaign" class="shell campaign hidden" aria-live="polite">
+      <nav class="campaign-nav">
+        <a class="brand" href="./">DROP<span>PAGE</span></a>
+        <button id="newCampaign" class="ghost" type="button">+ Створити свою</button>
+      </nav>
+
+      <div class="campaign-layout">
+        <article class="visual-card">
+          <img id="campaignImage" alt="Campaign artwork" />
+          <div class="image-overlay">
+            <span id="networkBadge" class="badge"></span>
+            <span id="deadlineBadge" class="badge subtle"></span>
+          </div>
+        </article>
+
+        <article class="card donation-card">
+          <div class="eyebrow">COMMUNITY DROP</div>
+          <h1 id="campaignTitle"></h1>
+          <p id="campaignDescription" class="campaign-description"></p>
+          <div id="creatorLine" class="creator-line"></div>
+
+          <div class="goal-box">
+            <span>Ціль збору</span>
+            <strong id="goalText"></strong>
+          </div>
+
+          <div class="wallet-block">
+            <div class="wallet-head">
+              <span>Адреса отримувача</span>
+              <span id="assetBadge" class="mini-pill"></span>
+            </div>
+            <code id="walletText"></code>
+            <div class="button-row">
+              <button id="copyWallet" class="secondary" type="button">Копіювати адресу</button>
+              <a id="explorerLink" class="secondary link-button" target="_blank" rel="noopener noreferrer">Перевірити в explorer</a>
+            </div>
+          </div>
+
+          <div class="donate-panel">
+            <label>Сума донату
+              <div class="amount-row">
+                <input id="donationAmount" type="number" min="0" step="any" />
+                <span id="amountSymbol"></span>
+              </div>
+            </label>
+            <a id="payLink" class="primary link-button" href="#">Відкрити гаманець</a>
+            <p id="payHint" class="microcopy"></p>
+          </div>
+
+          <div class="qr-wrap">
+            <div id="qrcode" class="qr"></div>
+            <p>QR містить платіжний URI або адресу отримувача.</p>
+          </div>
+
+          <div class="share-row">
+            <button id="shareCampaign" class="ghost" type="button">Поділитися</button>
+            <button id="copyLink" class="ghost" type="button">Копіювати link</button>
+          </div>
+
+          <div class="trust-box">
+            <strong>Без посередника.</strong>
+            <span>Кошти йдуть напряму на вказану адресу. Перед донатом перевір адресу та автора.</span>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>DropPage MVP</span>
+    <span>Public address only · no custody · no seed phrases</span>
+  </footer>
+</body>
+</html>
